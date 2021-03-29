@@ -1,0 +1,21 @@
+version: '2.0'
+
+services:
+  db:
+    image: mysql:8.0.20
+    restart: always
+    env_file: 
+      - ./db/.env
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/entrypoint:/docker-entrypoint-initdb.d/
+  cs-backend:
+    build: ./clients
+    image: clients
+    ports:
+        - target: 80
+          published: 10080
+          protocol: tcp
+          mode: host
+    links:
+      - 'db'
